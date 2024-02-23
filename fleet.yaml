@@ -8,7 +8,7 @@ NamespaceAnnotations:
   meta.helm.sh/release-namespace: monitoring
 
 kustomize:
-  dir: ""
+  dir: "./base"
 
 targetCustomizations:
 - name: speeltuin
