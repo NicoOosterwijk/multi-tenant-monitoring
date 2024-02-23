@@ -1,0 +1,22 @@
+defaultNamespace: monitoring
+
+NamespaceLabels:
+  app.kubernetes.io/managed-by: Helm
+
+NamespaceAnnotations:
+  meta.helm.sh/release-name: monitoring
+  meta.helm.sh/release-namespace: monitoring
+
+kustomize:
+  dir: ""
+
+targetCustomizations:
+- name: speeltuin
+  clusterName: speeltuin
+  kustomize:
+    dir: overlays/speeltuin
+
+- name: edge01
+  clusterName: edge01
+  kustomize:
+    dir: overlays/edge01

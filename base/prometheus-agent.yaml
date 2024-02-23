@@ -1,0 +1,54 @@
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+  labels:
+    app.kubernetes.io/component: prometheus
+    app.kubernetes.io/instance: prometheus
+    app.kubernetes.io/name: prometheus
+    app.kubernetes.io/part-of: kube-prometheus
+    app.kubernetes.io/version: 2.36.1
+  name: prometheus
+  namespace: monitoring
+spec:
+  enableFeatures: []
+  image: quay.io/prometheus/prometheus:v2.36.1
+  containers:    
+  - name: prometheus
+    args:
+    - '--config.file=/etc/prometheus/config_out/prometheus.env.yaml'
+    - '--storage.agent.path=/prometheus'
+    - '--enable-feature=agent' # this feature flag
+    - '--web.enable-lifecycle'
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - all
+  podMetadata:
+    labels:
+      app.kubernetes.io/component: prometheus
+      app.kubernetes.io/instance: k8s
+      app.kubernetes.io/name: prometheus
+      app.kubernetes.io/part-of: kube-prometheus
+      app.kubernetes.io/version: 2.36.1
+  podMonitorNamespaceSelector: {}
+  podMonitorSelector: {}
+  probeNamespaceSelector: {}
+  probeSelector: {}
+  replicas: 1
+  resources:
+    requests:
+      memory: 400Mi
+  securityContext:
+    fsGroup: 2000
+    runAsNonRoot: true
+    runAsUser: 1000
+  serviceAccountName: prometheus
+  serviceMonitorNamespaceSelector: {}
+  serviceMonitorSelector: {}
+  version: 2.36.1
+  remoteWrite:
+  - url: "https://prometheus.digitalinfo.local/prometheus/api/v1/write"
+  replicaExternalLabelName: "__replica__"
+  externalLabels:
+    tenant: "tenant-1"
