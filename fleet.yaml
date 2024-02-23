@@ -20,3 +20,8 @@ targetCustomizations:
   clusterName: edge01
   kustomize:
     dir: overlays/edge01
+
+- name: monitor
+  clusterName: monitor
+  kustomize:
+    dir: overlays/monitor
