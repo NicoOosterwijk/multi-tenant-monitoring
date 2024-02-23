@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: prom-label-proxy
+  name: prom-label-proxy
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prom-label-proxy
+  template:
+    metadata:
+      labels:
+        app: prom-label-proxy
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: prom-label-proxy
+        image: quay.io/prometheuscommunity/prom-label-proxy:v0.5.0
+        ports:
+          - name: http
+            containerPort: 8080
+        args:
+            - "--insecure-listen-address=0.0.0.0:8080"
+            - "--upstream=http://prometheus-k8s.monitoring.svc:9090/"
+            - "--label=tenant" # here
+        resources:
+          limits:
+            cpu: 100m
+            memory: 250Mi
+          requests:
+            cpu: 10m
+            memory: 190Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsUser: 65534
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prom-label-proxy
+  namespace: monitoring
+spec:
+  selector:
+    app: prom-label-proxy
+  ports:
+  - port: 8080
+    targetPort: http
+    
