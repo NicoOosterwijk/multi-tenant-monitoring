@@ -2,5 +2,5 @@ resources:
 - ../../base
 - ./central-prometheus.yaml
 - ./central-ingress.yaml
-pathes:
+patches:
 - prometheus-agent.yaml
